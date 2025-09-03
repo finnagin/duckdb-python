@@ -104,7 +104,7 @@ jobs:
         if: ${{ inputs.testsuite != 'none' }}
         run: |
           # install the test requirements
-          uv export --only-group test --no-emit-project --output-file ${{ runner.temp }}/pylock.toml --quiet
+          uv export --only-group test --prerelease=allow --no-emit-project --output-file ${{ runner.temp }}/pylock.toml --quiet
           cd ${{ runner.temp }}
           uv pip install -r pylock.toml --prerelease=allow
           # run tests
@@ -146,7 +146,7 @@ jobs:
       CIBW_TEST_SKIP: ${{ inputs.testsuite == 'none' && '*' || '*-macosx_universal2' }}
       CIBW_TEST_SOURCES: tests
       CIBW_BEFORE_TEST: >
-        uv export --only-group test --no-emit-project --output-file pylock.toml --directory {project} &&
+        uv export --only-group test --prerelease=allow --no-emit-project --output-file pylock.toml --directory {project} &&
         uv pip install -r pylock.toml --prerelease=allow
       CIBW_TEST_COMMAND: >
         uv run -v pytest ${{ inputs.testsuite == 'fast' && './tests/fast' || './tests' }} --verbose --ignore=./tests/stubs
