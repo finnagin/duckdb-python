@@ -211,7 +211,7 @@ required-environments = [ # ... but do always resolve for all of them
 # to configure the index url for cpu-only pytorch manually
 [[tool.uv.index]]
 name = "pytorch-cpu"
-url = "https://download.pytorch.org/whl/cpu"
+url = "https://download.pytorch.org/whl/nightly/cpu"
 explicit = true
 
 [tool.uv.sources]
