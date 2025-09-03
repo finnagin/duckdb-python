@@ -135,6 +135,8 @@ jobs:
         minimal:
           - ${{ inputs.minimal }}
         exclude:
+          - { python: cp39, platform: { os: windows-11-arm } }
+          - { python: cp310, platform: { os: windows-11-arm } }
           - { minimal: true, python: cp310 }
           - { minimal: true, python: cp311 }
           - { minimal: true, python: cp312 }
