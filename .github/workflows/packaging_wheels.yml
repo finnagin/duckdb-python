@@ -33,6 +33,7 @@ jobs:
         python: [ cp39, cp310, cp311, cp312, cp313, cp314, cp314t ]
         platform:
           - { os: windows-2025,     arch: amd64,      cibw_system: win }
+          - { os: windows-11-arm,   arch: arm64,      cibw_system: win }
           - { os: ubuntu-24.04,     arch: x86_64,     cibw_system: manylinux }
           - { os: ubuntu-24.04-arm, arch: aarch64,    cibw_system: manylinux }
           - { os: macos-15,         arch: arm64,      cibw_system: macosx }
@@ -47,7 +48,10 @@ jobs:
           - { minimal: true, platform: { arch: universal2 } }
           # Windows+cp314t disabled due to test failures in CI. 
           # TODO: Diagnose why tests fail (access violations) in some configurations
-          - { python: cp314t, platform: { os: windows-2025 } }  
+          - { python: cp314t, platform: { os: windows-2025 } }
+          - { python: cp314t, platform: { os: windows-11-arm } }
+          - { python: cp39, platform: { os: windows-11-arm } }
+          - { python: cp310, platform: { os: windows-11-arm } }
 
     runs-on: ${{ matrix.platform.os }}
     env:
@@ -92,7 +96,7 @@ jobs:
       - name: Build${{ inputs.testsuite != 'none' && ' and test ' || ' ' }}wheels
         uses: pypa/cibuildwheel@v3.1
         env:
-          CIBW_ARCHS: ${{ matrix.platform.arch == 'amd64' && 'AMD64' || matrix.platform.arch }}
+          CIBW_ARCHS: ${{ matrix.platform.arch == 'amd64' && 'AMD64' || matrix.platform.arch == 'arm64' && matrix.platform.cibw_system == 'win' && 'ARM64' || matrix.platform.arch }}
           CIBW_BUILD: ${{ matrix.python }}-${{ matrix.platform.cibw_system }}_${{ matrix.platform.arch }}
           # PYTHON_GIL=1: Suppresses the RuntimeWarning that the GIL is enabled on free-threaded builds. 
           # TODO: Remove PYTHON_GIL=1 when free-threaded is supported. 
